@@ -1,0 +1,20 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}
+    Create Standard for {{ course.name }}
+{% endblock %}
+
+{% block body %}
+<h1>Create a Standard for {{ course.name }}</h1>
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="short" class="form-label">Short Description (limit to 10 characters)</label>
+    <input type="text" id="short" class="form-control" name="short">
+
+    <label for="long" class="form-label">Long Description</label>
+    <input type="text" id="long" class="form-control" name="long">
+
+    <button type="submit" class="btn btn-primary">Create Standard</button>
+</form>
+{% endblock %}

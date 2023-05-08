@@ -1,0 +1,17 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}
+    Create Course
+{% endblock %}
+
+{% block body %}
+<h1>Create a Course</h1>
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="name" class="form-label">Course Title</label>
+    <input type="text" id="name" class="form-control" name="name">
+
+    <button type="submit" class="btn btn-primary">Create Course</button>
+</form>
+{% endblock %}
