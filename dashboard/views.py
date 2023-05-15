@@ -25,3 +25,20 @@ def create_standard(request, course_id):
         return render(request, "dashboard/create-standard.html", {
             "course": course
         })
+
+def dashboard(request):
+    courses = Course.objects.filter(user=request.user)
+    return render(request, "dashboard/dashboard.html", {
+        "courses": courses
+    })
+
+def course(request, course_id):
+    course = Course.objects.get(user=request.user, id=course_id)
+    standards = Standard.objects.filter(course=course)
+    return render(request, "dashboard/course.html", {
+        "course": course,
+        "standards": standards
+    })
+
+def add_question_view(request, course_id):
+    return render(request, "dashboard/add-question.html")

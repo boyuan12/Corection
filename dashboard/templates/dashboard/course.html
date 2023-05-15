@@ -1,0 +1,14 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}
+    Course
+{% endblock %}
+
+{% block body %}
+<h1>Course: {{ course.name }}</h1>
+<ul>
+    {% for s in standards %}
+        <li>{{ s.short_name }} - {{ s.long_name }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

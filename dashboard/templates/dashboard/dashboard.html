@@ -1,0 +1,14 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block body %}
+<h1>Courses that you have</h1>
+<ul>
+    {% for c in courses %}
+        <li><a href="/course/{{ c.id }}/">{{ c.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
