@@ -15,6 +15,7 @@ class MCQuestion(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     question = models.TextField()
     image_url = models.URLField(null=True)
+    standards = models.ManyToManyField(Standard)
 
 class MCOption(models.Model):
     mcquestion = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)

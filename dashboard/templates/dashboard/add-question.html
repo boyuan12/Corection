@@ -7,10 +7,11 @@
 {% block body %}
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
 <h1>Add a Question</h1>
-<form>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
     <div class="mb-3">
         <label for="question" class="form-label">Type the Question</label>
-        <textarea class="form-control" id="question" rows="3"></textarea>
+        <textarea class="form-control" id="question" rows="3" name="question"></textarea>
     </div>
     <div class="mb-3">
         <label for="formFile" class="form-label">Upload a Supplementary File if applicable</label>
@@ -20,39 +21,47 @@
     <p>In the boxes below, fill in the choices. Fill it in order and leave the unused blank. Select answer(s) that is (are) correct.</p>
     <div class="input-group mb-3">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="checkbox" value="" aria-label="">
+          <input class="form-check-input mt-0" type="checkbox" value="a" aria-label="" name="correct">
         </div>
-        <input type="text" class="form-control" id="Option A" placeholder="Option A">
+        <input type="text" class="form-control" id="Option A" placeholder="Option A" name="opt-a-val">
     </div>
     <div class="input-group mb-3">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="checkbox" value="" aria-label="">
+          <input class="form-check-input mt-0" type="checkbox" value="b" aria-label="" name="correct">
         </div>
-        <input type="text" class="form-control" id="Option B" placeholder="Option B">
+        <input type="text" class="form-control" id="Option B" placeholder="Option B" name="opt-b-val">
     </div>
     <div class="input-group mb-3">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="checkbox" value="" aria-label="">
+          <input class="form-check-input mt-0" type="checkbox" value="c" aria-label="" name="correct">
         </div>
-        <input type="text" class="form-control" id="Option C" placeholder="Option C">
+        <input type="text" class="form-control" id="Option C" placeholder="Option C" name="opt-c-val">
     </div>
     <div class="input-group mb-3">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="checkbox" value="" aria-label="">
+          <input class="form-check-input mt-0" type="checkbox" value="d" aria-label="" name="correct">
         </div>
-        <input type="text" class="form-control" id="Option D" placeholder="Option D">
+        <input type="text" class="form-control" id="Option D" placeholder="Option D" name="opt-d-val">
     </div>
     <div class="input-group mb-3">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="checkbox" value="" aria-label="">
+          <input class="form-check-input mt-0" type="checkbox" value="e" aria-label="" name="correct">
         </div>
-        <input type="text" class="form-control" id="Option E" placeholder="Option E">
+        <input type="text" class="form-control" id="Option E" placeholder="Option E" name="opt-e-val">
     </div>
     <hr>
     <div class="mb-3">
-        <label for="standards" class="form-label">Standards</label>
-        <input type="email" class="form-control" id="standards" placeholder="Type standards">
+      <span>Standards</span>
+      {% for s in standards %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="{{ s.short_name }}" id="{{ s.short_name }}" name="standard">
+          <label class="form-check-label" for="{{ s.short_name }}">
+            {{ s.short_name }} - {{ s.long_name }}
+          </label>
+        </div>
+      {% endfor %}
     </div>
-    <button type="button" class="btn btn-primary">Submit</button>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}

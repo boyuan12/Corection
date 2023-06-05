@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from .models import MCOption, MCQuestion, Course, Standard
+from django.contrib import messages
 
 # Create your views here.
 def create_course(request):
@@ -41,4 +42,23 @@ def course(request, course_id):
     })
 
 def add_question_view(request, course_id):
-    return render(request, "dashboard/add-question.html")
+    course = Course.objects.get(user=request.user, id=course_id)
+    standards = Standard.objects.filter(course=course)
+    
+    if request.method == "POST":
+
+        question = MCQuestion.objects.create(course=course, question=request.POST["question"])
+        for short_name in request.POST.getlist("standard"):
+            print(short_name, request.POST["standard"], request.POST)
+            question.standards.add(Standard.objects.get(course=course, short_name=short_name))
+        for opt in ['a', 'b', 'c', 'd', 'e']:
+            if opt in request.POST.getlist("correct"):
+                MCOption.objects.create(mcquestion=question, text=request.POST[f"opt-{opt}-val"], is_correct=True)
+            else:
+                MCOption.objects.create(mcquestion=question, text=request.POST[f"opt-{opt}-val"], is_correct=False)
+        messages.add_message(request, messages.SUCCESS, "Question created successfully")
+        return redirect(f"/course/{course.id}/add-question")
+    else:
+        return render(request, "dashboard/add-question.html", {
+            "standards": standards
+        })
