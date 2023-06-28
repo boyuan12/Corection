@@ -1,0 +1,49 @@
+{% extends "authentication/base.html" %}
+
+{% block title %}
+    View Questions
+{% endblock %}
+
+{% block body %}
+<h1>Questions from {{ course.name }} with standards {{ standard.short_name }}</h1>
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" id="toggle">
+    <label class="form-check-label" for="toggle">Toggle Answer</label>
+</div>
+<hr>
+<ol>
+    {% for q in questions %}
+        <li>
+            <div>{{ q.question }}</div>
+            {% if q.image_url %}
+                <img src="{{ q.image_url }}">
+            {% endif %}
+            <ol type="a">
+                {% for c in q.choices.all %}
+                    {% if c.text != "" %}
+                        {% if c.is_correct == True %}
+                            <li class="correct">{{ c.text }}</li>
+                        {% else %}
+                            <li>{{ c.text }}</li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </li>
+    {% endfor %}
+</ol>
+
+<script>
+    document.getElementById("toggle").onchange = () => {
+        var elements = document.querySelectorAll(".correct");
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].style.color == "green") {
+                elements[i].style.color = "black";
+            } else {
+                elements[i].style.color = "green";
+            }
+        }
+    }
+
+</script>
+{% endblock %}

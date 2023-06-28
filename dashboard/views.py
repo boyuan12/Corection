@@ -1,6 +1,9 @@
 from django.shortcuts import redirect, render
 from .models import MCOption, MCQuestion, Course, Standard
 from django.contrib import messages
+from helpers import upload_image
+import base64
+
 
 # Create your views here.
 def create_course(request):
@@ -47,18 +50,47 @@ def add_question_view(request, course_id):
     
     if request.method == "POST":
 
-        question = MCQuestion.objects.create(course=course, question=request.POST["question"])
+        if len(request.FILES) != 0:
+            print(request.FILES["image"])
+            url = upload_image(base64.b64encode(request.FILES["image"].file.read()).decode('utf-8'))
+            question = MCQuestion.objects.create(course=course, question=request.POST["question"], image_url=url)
+        else:
+            question = MCQuestion.objects.create(course=course, question=request.POST["question"])
+
         for short_name in request.POST.getlist("standard"):
             print(short_name, request.POST["standard"], request.POST)
             question.standards.add(Standard.objects.get(course=course, short_name=short_name))
+            question.save()
+
         for opt in ['a', 'b', 'c', 'd', 'e']:
             if opt in request.POST.getlist("correct"):
-                MCOption.objects.create(mcquestion=question, text=request.POST[f"opt-{opt}-val"], is_correct=True)
+                opt = MCOption.objects.create(text=request.POST[f"opt-{opt}-val"], is_correct=True)
             else:
-                MCOption.objects.create(mcquestion=question, text=request.POST[f"opt-{opt}-val"], is_correct=False)
+                opt = MCOption.objects.create(text=request.POST[f"opt-{opt}-val"], is_correct=False)
+            
+            print(opt)
+            question.choices.add(opt)
+            question.save()
+
         messages.add_message(request, messages.SUCCESS, "Question created successfully")
         return redirect(f"/course/{course.id}/add-question")
     else:
         return render(request, "dashboard/add-question.html", {
             "standards": standards
         })
+
+def view_questions_by_standard(request, course_id, standard_id):
+    course = Course.objects.get(id=course_id)
+    standard = Standard.objects.get(id=standard_id)
+    questions = MCQuestion.objects.filter(standards__in=[standard], course=course)
+    print(questions)
+
+    for question in questions:
+        for choice in question.choices.all():
+            print(choice)
+        
+    return render(request, "dashboard/view-questions.html", {
+        "questions": questions,
+        "course": course,
+        "standard": standard
+    })

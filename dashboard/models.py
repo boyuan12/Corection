@@ -11,13 +11,13 @@ class Standard(models.Model):
     short_name = models.CharField(max_length=10)
     long_name = models.TextField(null=True)
 
+class MCOption(models.Model):
+    text = models.TextField()
+    is_correct = models.BooleanField()
+
 class MCQuestion(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     question = models.TextField()
     image_url = models.URLField(null=True)
     standards = models.ManyToManyField(Standard)
-
-class MCOption(models.Model):
-    mcquestion = models.ForeignKey(MCQuestion, on_delete=models.CASCADE)
-    text = models.TextField()
-    is_correct = models.BooleanField()
+    choices = models.ManyToManyField(MCOption)

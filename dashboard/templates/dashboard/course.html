@@ -8,7 +8,7 @@
 <h1>Course: {{ course.name }}</h1>
 <ul>
     {% for s in standards %}
-        <li>{{ s.short_name }} - {{ s.long_name }}</li>
+        <li><a href="/course/{{ course.id }}/view-questions/s/{{ s.id }}">{{ s.short_name }} - {{ s.long_name }}</a></li>
     {% endfor %}
 </ul>
 {% endblock %}
