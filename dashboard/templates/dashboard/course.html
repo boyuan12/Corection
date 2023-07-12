@@ -10,5 +10,44 @@
     {% for s in standards %}
         <li><a href="/course/{{ course.id }}/view-questions/s/{{ s.id }}">{{ s.short_name }} - {{ s.long_name }}</a></li>
     {% endfor %}
+
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+      
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        function colorize(opaque, hover, ctx) {
+            const v = ctx.parsed;
+            const c = v < -50 ? '#D60000'
+                : v < 0 ? '#F46300'
+                : v < 50 ? '#0358B6'
+                : '#44DE28';
+
+            const opacity = hover ? 1 - Math.abs(v / 150) - 0.2 : 1 - Math.abs(v / 150);
+
+            return opaque ? c : Utils.transparentize(c, opacity);
+        }
+
+        function hoverColorize(ctx) {
+            return colorize(false, true, ctx);
+        }
+
+        const ctx = document.getElementById('myChart');
+
+        fetch(`/api/course/{{ course.id }}/standards-stats`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            const config = {
+                type: 'doughnut',
+                data: data,
+            };
+
+            new Chart(ctx, config)
+        })
+
+    </script>
 </ul>
 {% endblock %}
